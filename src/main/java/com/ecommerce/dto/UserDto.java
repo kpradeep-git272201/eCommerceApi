@@ -1,6 +1,6 @@
-package com.ecommerce.module.user.dto;
+package com.ecommerce.dto;
 
-import com.ecommerce.module.user.entity.Role;
+import com.ecommerce.entity.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

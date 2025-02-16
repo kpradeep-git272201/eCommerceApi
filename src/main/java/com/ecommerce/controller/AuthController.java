@@ -1,12 +1,9 @@
-package com.ecommerce.module.user.controller;
+package com.ecommerce.controller;
 
 import lombok.AllArgsConstructor;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,19 +11,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecommerce.entity.TokenBlacklist;
+import com.ecommerce.entity.Users;
 import com.ecommerce.jwt.util.JwtRequest;
 import com.ecommerce.jwt.util.JwtResponse;
 import com.ecommerce.jwt.util.JwtUtils;
-import com.ecommerce.module.user.entity.Users;
-import com.ecommerce.module.user.service.UserService;
+import com.ecommerce.repository.TokenBlacklistRepository;
+import com.ecommerce.service.TokenBlacklistService;
+import com.ecommerce.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -36,14 +36,14 @@ import jakarta.validation.Valid;
 public class AuthController {
 
 	@Autowired
-	private UserDetailsService userDetailsService;
-
-	@Autowired
 	private AuthenticationManager manager;
 
 	@Autowired
 	private JwtUtils helper;
-
+	
+	
+	 @Autowired
+	    private TokenBlacklistRepository tokenBlacklistRepository;
 	@Autowired
 	private UserService userService;
 
@@ -62,7 +62,6 @@ public class AuthController {
 	
 
 		String token = this.helper.generateToken(userDetails);
-		List<Object> planUnit = new ArrayList<>();
 		JwtResponse response = new JwtResponse(userDetails.getUsername(), token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -84,7 +83,20 @@ public class AuthController {
 	 * (byte b : hashInBytes) { sb.append(String.format("%02x", b)); } return
 	 * sb.toString(); }
 	 */
-	
+	 @PostMapping("/logout")
+	    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+		   if (token.startsWith("Bearer ")) {
+	            token = token.substring(7); // Remove "Bearer " prefix
+	        }
+
+	        if (!tokenBlacklistRepository.existsByToken(token)) {
+	            tokenBlacklistRepository.save(new TokenBlacklist(token));
+	        }
+
+	        SecurityContextHolder.clearContext(); // Clear security context
+
+	        return ResponseEntity.ok("Logged out successfully");
+	    }
 	
 	@GetMapping("/test")
 	public ResponseEntity<String> getTest() {

@@ -1,4 +1,4 @@
-package com.ecommerce.module.user.controller;
+package com.ecommerce.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ecommerce.module.user.dto.UserDto;
-import com.ecommerce.module.user.entity.Users;
-import com.ecommerce.module.user.service.UserService;
+import com.ecommerce.dto.UserDto;
+import com.ecommerce.entity.Users;
+import com.ecommerce.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1")

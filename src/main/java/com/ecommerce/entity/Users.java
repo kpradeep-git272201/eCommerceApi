@@ -1,6 +1,5 @@
-package com.ecommerce.module.user.entity;
+package com.ecommerce.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

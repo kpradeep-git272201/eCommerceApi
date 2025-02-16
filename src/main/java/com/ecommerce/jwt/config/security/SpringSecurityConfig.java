@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.ecommerce.module.user.entity.Users;
-import com.ecommerce.module.user.serviceImpl.UserServiceImpl;
+import com.ecommerce.entity.Users;
+import com.ecommerce.serviceImpl.UserServiceImpl;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;

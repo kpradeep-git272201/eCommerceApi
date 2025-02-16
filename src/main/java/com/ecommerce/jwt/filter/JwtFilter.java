@@ -1,6 +1,9 @@
 package com.ecommerce.jwt.filter;
 
 import com.ecommerce.jwt.util.*;
+import com.ecommerce.repository.TokenBlacklistRepository;
+import com.ecommerce.service.TokenBlacklistService;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -16,8 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-
 import java.io.IOException;
 
 @Component
@@ -27,7 +28,10 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtils jwtHelper;
 	@Autowired
     private UserDetailsService userDetailsService;
-    @Override
+	
+	  @Autowired
+	    private TokenBlacklistRepository tokenBlacklistRepository;
+    
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestHeader = request.getHeader("Authorization");
        
@@ -35,8 +39,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
 
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
-       
             token = requestHeader.substring(7);
+            
             try {
                 username = this.jwtHelper.getUsernameFromToken(token);
             } catch (IllegalArgumentException e) {
@@ -59,7 +63,15 @@ public class JwtFilter extends OncePerRequestFilter {
             //fetch user detail from username
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
+   
             if (validateToken) {
+            	  // **Check if the token is blacklisted**
+                if (tokenBlacklistRepository.existsByToken(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token is blacklisted. Please log in again.");
+                    return;
+                }
+          
                 //set the authentication
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

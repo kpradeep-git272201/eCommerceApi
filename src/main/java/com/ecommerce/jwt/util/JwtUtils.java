@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.ecommerce.module.user.entity.Users;
+import com.ecommerce.entity.Users;
 
 import java.util.Base64;
 import java.util.Date;
@@ -114,5 +114,9 @@ public class JwtUtils {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+    
+    public Date getExpirationFromToken(String token) {
+        return getClaimFromToken(token, Claims::getExpiration);
     }
 }

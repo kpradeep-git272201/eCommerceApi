@@ -1,11 +1,11 @@
-package com.ecommerce.module.user.service;
+package com.ecommerce.service;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.ecommerce.module.user.dto.UserDto;
-import com.ecommerce.module.user.entity.Users;
+import com.ecommerce.dto.UserDto;
+import com.ecommerce.entity.Users;
 
 public interface UserService {
 	

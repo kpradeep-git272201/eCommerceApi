@@ -1,25 +1,25 @@
-package com.ecommerce.module.user.serviceImpl;
+package com.ecommerce.serviceImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ecommerce.module.user.dto.UserDto;
-import com.ecommerce.module.user.entity.Users;
-import com.ecommerce.module.user.repository.UserRepository;
-import com.ecommerce.module.user.service.UserService;
+import com.ecommerce.dto.UserDto;
+import com.ecommerce.entity.Users;
+import com.ecommerce.repository.UserRepository;
+import com.ecommerce.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class UserServiceImpl implements UserService{
+	
 
 	private final ObjectMapper objectMapper;
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	   public UserServiceImpl(ObjectMapper objectMapper) {
 	        this.objectMapper = objectMapper;
 	    }
